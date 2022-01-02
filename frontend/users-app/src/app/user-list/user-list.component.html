@@ -1,0 +1,123 @@
+<div class="content-fluid">
+    <div class="row justify-content-center">
+        <div class="col-11 text-center mx-auto">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="error">
+                <strong>{{error}}</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="clearMessage()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="card shadow mt-5">
+                <div class="card-header">
+                    <h3>Administrar usuarios</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row table-responsive" *ngIf="users">
+                        <table class="table table-hover" id="example">
+                            <caption>Lista de usuarios</caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Codigo</th>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">Apellido</th>
+                                    <th scope="col">Detalle</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let user of users">
+                                    <td> {{user.code}}</td>
+                                    <td> {{user.firstName}}</td>
+                                    <td> {{user.lastName}}</td>
+                                    <td> <button type="button" class="btn btn-primary"
+                                            (click)="setUserId(user.code)">Ver</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <form class="row" [formGroup]="searchForm" (ngSubmit)="findUsers()" autocomplete="off">
+                        <div class="col-sm-2 my-2">
+                            <button type="menu" class="btn btn-primary" (click)="setUserId(0)">
+                                <i class="fas fa-user-plus"></i> Registrar
+                            </button>
+                        </div>
+                        <div class="col-sm-2 my-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search"></i> Buscar
+                            </button>
+                        </div>
+                        <!-- Criteria -->
+                        <div class="input-group col-sm-4 my-2">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="fas fa-filter text-muted"></i> Filtrar por
+                                </span>
+                            </div>
+                            <select id="criteria" class="form-control custom-select bg-white border-left-0 border-md"
+                                formControlName="criteria" (ngModelChange)="resetFilter()">
+                                <option *ngFor="let criteria of criteriaList" value="{{criteria.key}}">
+                                    {{criteria.label}}
+                                </option>
+                            </select>
+                        </div>
+                        <!-- Identifier -->
+                        <div class="input-group col-sm-4 my-2" *ngIf="isSelected('CODE')">
+                            <input type="text" id="code" class="form-control bg-white border-left-0 border-md"
+                                formControlName="value" placeholder="Número de identificación"
+                                (keypress)="numberOnly($event)">
+                        </div>
+                        <!-- First Name -->
+                        <div class="input-group col-sm-4 my-2" *ngIf="isSelected('FIRSTNAME')">
+                            <input id="firstName" type="text" placeholder="Nombre"
+                                class="form-control bg-white border-left-0 border-md" formControlName="value"
+                                oninput="this.value = this.value.toUpperCase()">
+                        </div>
+                        <!-- Last Name -->
+                        <div class="input-group col-sm-4 my-2" *ngIf="isSelected('LASTNAME')">
+                            <input id="lastName" type="text" placeholder="Apellido"
+                                class="form-control bg-white border-left-0 border-md" formControlName="value"
+                                oninput="this.value = this.value.toUpperCase()">
+                        </div>
+                        <!-- State -->
+                        <div class="input-group col-sm-4 my-2" *ngIf="isSelected('STATE')">
+                            <select id="group" name="group"
+                                class="form-control custom-select bg-white border-left-0 border-md"
+                                formControlName="value">
+                                <option *ngFor="let state of stateList" value="{{state}}">
+                                    {{state}}
+                                </option>
+                            </select>
+                        </div>
+                        <!-- Profile -->
+                        <div class="input-group col-sm-4 my-2" *ngIf="isSelected('PROFILE')">
+                            <select id="group" name="group" class="form-control custom-select" formControlName="value">
+                                <option *ngFor="let profile of profiles" value="{{profile.code}}">
+                                    {{profile.name}}
+                                </option>
+                            </select>
+                        </div>
+                        <!-- Toll -->
+                        <div class="input-group col-sm-4 my-2" *ngIf="isSelected('TOLL')">
+                            <select id="toll" name="toll" class="form-control custom-select" formControlName="value">
+                                <option *ngFor="let toll of tolls" value="{{toll.code}}">
+                                    {{toll.name}}
+                                </option>
+                            </select>
+                        </div>
+                    </form>
+                    <div class="row justify-content-center" *ngIf=showEdit>
+                        <div class="col-sm-12 ">
+                            <div class="row close">
+                                <button type="button" class="close" (click)="closeEdit()">
+                                    <i class="fas fa-window-close"></i>
+                                </button>
+                            </div>
+                            <div class="row justify-content-center ">
+                                <users-user-edit class="col-sm-12 my-2" [id]=userId></users-user-edit>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

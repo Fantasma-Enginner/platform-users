@@ -1,0 +1,30 @@
+<div class="col-12 pagination__container justify-content-center ">
+    <div class="row-1 pagination__button pagination__page-first m-1"
+        [ngClass]="currentPage === 1 && 'pagination__button--disabled'" (click)="onFirstPage()">
+        <i class="fas fa-fast-backward"></i>
+    </div>
+    <div class="row-1 pagination__button pagination__page-previous m-1"
+        [ngClass]="currentPage === 1 && 'pagination__button--disabled'" (click)="onPreviousPage()">
+        <i class="fas fa-caret-left"></i>
+    </div>
+    <div class="row-4 pagination__page-active m-1">
+        <input class="pagination__current-page" (input)="onSetPage($event)" [value]="currentPage"> /
+        <span>{{allPagesNumber}}</span>
+    </div>
+    <div class="row-1 pagination__button pagination__page-next m-1"
+        [ngClass]="currentPage === allPagesNumber && 'pagination__button--disabled'" (click)="onNextPage()">
+        <i class="fas fa-caret-right"></i>
+    </div>
+    <div class="row-1 pagination__button pagination__page-last m-1"
+        [ngClass]="currentPage === allPagesNumber && 'pagination__button--disabled'" (click)="onLastPage()">
+        <i class="fas fa-fast-forward"></i>
+    </div>
+    <div class="row-4 m-1">
+        Items
+        <select (change)="onSetItems($event)">
+            <option *ngFor="let size of itemsOptions" [ngValue]=size>
+                {{size}}
+            </option>
+        </select>
+    </div>
+</div>

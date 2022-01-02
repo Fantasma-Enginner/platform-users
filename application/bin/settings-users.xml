@@ -1,0 +1,11 @@
+<service>
+  <id>VPS-settings-users</id>
+  <name>VPS-settings-users</name>
+  <description>This service runs manage operations for the users for the Platform VIAL+.</description>
+  <env name="SETTINGS_USERS_HOME" value="%BASE%"/>
+  <executable>java</executable>
+  <arguments>-Xrs -Xmx128m -jar "%BASE%\settings-users.jar"</arguments>
+  <log mode="roll-by-size"></log>
+  <logpath>logs</logpath>
+  <onfailure action="restart" delay="10 sec" />
+</service>

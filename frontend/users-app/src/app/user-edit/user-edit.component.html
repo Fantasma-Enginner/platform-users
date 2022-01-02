@@ -1,0 +1,242 @@
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-12 text-center mx-auto">
+            <div class="alert alert-success alert-dismissible fade show" role="alert" *ngIf="isSuccess()">
+                <strong>{{message}}</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="clearMessage()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="isError()">
+                <strong>{{message}}</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="clearMessage()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="card shadow mt-5">
+                <div class="card-header">
+                    <h3> Usuario </h3>
+                </div>
+                <div class="card-body">
+                    <form [formGroup]="registerForm" (ngSubmit)="submitUser()" autocomplete="off">
+                        <div class="row m-2 px-2" formGroupName="user">
+                            <div class="col-md-5">
+                                <h5 class="fs-title text-center">Datos Personales</h5>
+                                <!-- Identifier -->
+                                <div class="input-group col-lg-10 my-2">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"> Identificación </span>
+                                    </div>
+                                    <input type="text" id="code" class="form-control" formControlName="code"
+                                        placeholder="Número de identificación" (keypress)="numberOnly($event)">
+                                </div>
+                                <!-- First Name -->
+                                <div class="input-group col-lg-10 my-2">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"> Nombres </span>
+                                    </div>
+                                    <input id="firstName" type="text" placeholder="Nombres" class="form-control"
+                                        formControlName="firstName" oninput="this.value = this.value.toUpperCase()">
+                                </div>
+                                <!-- Last Name -->
+                                <div class="input-group col-lg-10 my-2">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text "> Apellidos </span>
+                                    </div>
+                                    <input id="lastName" type="text" placeholder="Apellidos" class="form-control"
+                                        formControlName="lastName" oninput="this.value = this.value.toUpperCase()">
+                                </div>
+                            </div>
+                            <!-- User image panel -->
+                            <div class="col-md-7">
+                                <h5 class="fs-title">Fotografía</h5>
+                                <div class="row justify-content-center">
+                                    <div class="captura">
+                                        <webcam *ngIf="showWebcam" [width]="320" [height]="240"
+                                            [trigger]="triggerObservable" [videoOptions]="videoOptions"
+                                            [imageQuality]="1" (imageCapture)="handleImage($event)"
+                                            (initError)="handleInitError($event)">
+                                        </webcam>
+                                        <input type="hidden" name="photo" formControlName="photo">
+                                        <img *ngIf="hasImage()" [src]="imageData"
+                                            style="max-width:100%;max-height:100%;" />
+                                        <h4 *ngIf="errors.length > 0">Messages:</h4>
+                                        <ul *ngFor="let error of errors">
+                                            <li>{{error | json}}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4 text-right">
+                                        <button type="button" class="btn btn-primary" (click)="switchVideo()"><i
+                                                class="{{actionVideo}}"></i></button>
+                                    </div>
+                                    <div class="col-4 text-center">
+                                        <input style="display: none" type="file" accept="image/jpg"
+                                            (change)="onFileChanged($event)" #fileInput>
+                                        <button type="button" class="btn btn-primary" (click)="fileInput.click()"><i
+                                                class="fas fa-file-upload"></i></button>
+                                    </div>
+                                    <div class="col-4 text-left">
+                                        <button [disabled]="!hasImage()" type="button" class="btn btn-primary"
+                                            (click)="resetImage()"><i class="fas fa-eraser"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row m-2 px-2" formGroupName="contact">
+                            <div class="col-md-6">
+                                <h5 class="fs-title">Personal</h5>
+                                <!-- Phone -->
+                                <div class="input-group col-lg-10 my-2">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"> Teléfono </span>
+                                    </div>
+                                    <input id="phone" type="text" placeholder="Número de teléfono" class="form-control"
+                                        formControlName="phone" (keypress)="numberOnly($event)">
+                                </div>
+                                <!-- Address -->
+                                <div class=" input-group col-lg-10 my-2">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text "> Dirección </span>
+                                    </div>
+                                    <input id="address" type="text" placeholder="Dirección de contacto"
+                                        class="form-control" formControlName="address"
+                                        oninput="this.value = this.value.toUpperCase()">
+                                </div>
+                                <!-- Email Address -->
+                                <div class="input-group col-lg-10 my-2">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text "> Email </span>
+                                    </div>
+                                    <input id="email" type="email" placeholder="Correo electrónico" class="form-control"
+                                        formControlName="email">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Contacto en caso de emergencia</h5>
+                                <!-- Contact Emergency Name -->
+                                <div class="input-group col-lg-10 my-2">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text "> Nombre </span>
+                                    </div>
+                                    <input id="address" type="text" placeholder="Nombre de contacto"
+                                        class="form-control" formControlName="emergencyName"
+                                        oninput="this.value = this.value.toUpperCase()">
+                                </div>
+                                <!-- Contact Emergency Phone -->
+                                <div class="input-group col-lg-10 my-2">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text "> Teléfono </span>
+                                    </div>
+                                    <input id="phone" type="text" placeholder="Número de teléfono" class="form-control"
+                                        formControlName="emergencyPhone" (keypress)="numberOnly($event)">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row m-2 custom-control custom-checkbox" *ngIf="!editMode">
+                            <label for="checkPolicies">
+                                <input type="checkbox" id="checkPolicies" name="checkPolicies"
+                                    formControlName="checkPolicies">Conozco y acepto la
+                                <a href="politica">politica</a>
+                                de tratamiento de datos
+                            </label>
+                        </div>
+                        <button class="btn btn-primary mb-2" type="submit"
+                            [disabled]='!registerForm.valid'>Guardar</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card shadow my-5" *ngIf="editMode">
+                <div class="card-header">
+                    <h3 class="fs-title">Enrolamiento</h3>
+                </div>
+                <div class="card-body">
+                    <form id="msform" [formGroup]="enrolmentForm" (ngSubmit)="submitEnrollment()" autocomplete="off">
+                        <div class="row m-2">
+                            <!-- Profile -->
+                            <div class="input-group col-md my-2">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text "> Perfil </span>
+                                </div>
+                                <select id="group" name="group" class="form-control custom-select"
+                                    formControlName="profile">
+                                    <option *ngFor="let profile of profiles" value="{{profile.code}}">{{profile.name}}
+                                    </option>
+                                </select>
+                            </div>
+
+                            <!-- Toll -->
+                            <div class="input-group col-md my-2">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text "> Estación </span>
+                                </div>
+                                <select id="toll" name="toll" class="form-control custom-select" formControlName="toll">
+                                    <option *ngFor="let toll of tolls" value="{{toll.id}}">{{toll.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="next action-button btn btn-primary m-2"
+                            (ngSubmit)="submitEnrollment()" [disabled]='!enrolmentForm.valid'>Asignar</button>
+                        <button type="button" class="btn btn-danger">Inactivar</button>
+                    </form>
+                </div>
+            </div>
+            <div class="card shadow my-5" *ngIf="editMode">
+                <div class="card-header">
+                    <h3 class="fs-title">Autenticación</h3>
+                </div>
+                <div class="card-body">
+                    <form id="msform" [formGroup]="authenticationForm" autocomplete="off">
+                        <div class="row m-2">
+                            <!-- Tisc -->
+                            <div class="input-group col-sm-8 my-2">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text "> Tarjeta </span>
+                                </div>
+                                <input id="tisc" type="text" name="tisc" placeholder="ID tarjeta de ingreso"
+                                    class="form-control" formControlName="cardId"
+                                    oninput="this.value = this.value.toUpperCase()"
+                                    (keypress)="hexadecimalOnly($event)">
+                                <button type="button" class="btn btn-primary" (click)="searchTisc()">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                                <button type="button" class="btn btn-primary" (click)="readTisc()">
+                                    <i class="fas fa-rss-square"></i>
+                                </button>
+                            </div>
+                            <div class="col-sm-4">
+                                <button type="button" name="" class="btn btn-primary"
+                                    (click)="asignCard()">Asignar</button>
+                            </div>
+                        </div>
+                        <div class="row m-2">
+                            <!-- Password -->
+                            <div class="input-group col-sm-4 my-2">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text "> Contraseña </span>
+                                </div>
+                                <input id="password" type="password" placeholder="Contraseña" formControlName="password"
+                                    class="form-control">
+                            </div>
+
+                            <!-- Confirm Password -->
+                            <div class="input-group col-sm-4 my-2">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text "> Confirmar </span>
+                                </div>
+                                <input id="password" type="password" placeholder="Confirme Contraseña"
+                                    formControlName="confirmPassword" class="form-control">
+                            </div>
+                            <div class="col-sm-4 text-center my-2">
+                                <button class="btn btn-primary" (click)="resetPassword()">
+                                    <i class="fas fa-key"></i> Establecer</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

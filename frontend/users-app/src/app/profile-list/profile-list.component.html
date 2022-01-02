@@ -1,0 +1,93 @@
+<div class="content-fluid">
+    <div class="row justify-content-center">
+        <div class="col-11 text-center mx-auto">
+            <div class="row card shadow mt-5">
+                <div class="card-header">
+                    <h3>Administrar Perfiles</h3>
+                </div>
+                <div class="card-body">
+                    <div>
+                        <form class="row" [formGroup]="searchForm" autocomplete="off">
+                            <div class="my-2">
+                                <a type="button" class="btn btn-outline-primary"
+                                    routerLink='/users-app/profiles/create'>
+                                    <i class="fas fa-user-plus"></i> Crear
+                                </a>
+                            </div>
+
+                            <!-- Criteria -->
+                            <div class="input-group col my-2">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-filter text-muted"></i> Filtrar por
+                                    </span>
+                                </div>
+                                <select id="criteria" class="form-control custom-select" formControlName="criteria"
+                                    (ngModelChange)="resetForm()">
+                                    <option *ngFor="let criteria of criteriaList" value="{{criteria.key}}">
+                                        {{criteria.label}}
+                                    </option>
+                                </select>
+                            </div>
+                            <!-- Identifier -->
+                            <div class="input-group col my-2" *ngIf="isSelected('CODE')">
+                                <input type="text" id="code" class="form-control" formControlName="value"
+                                    placeholder="Código" (keypress)="numberOnly($event)">
+                            </div>
+                            <!-- Name -->
+                            <div class="input-group col my-2" *ngIf="isSelected('NAME')">
+                                <input id="name" type="text" placeholder="Nombre" class="form-control"
+                                    formControlName="value" oninput="this.value = this.value.toUpperCase()">
+                            </div>
+
+                            <!-- State -->
+                            <div class="input-group col my-2" *ngIf="isSelected('STATE')">
+                                <select id="group" name="group" class="form-control custom-select"
+                                    formControlName="value">
+                                    <option *ngFor="let state of stateList" value="{{state}}">
+                                        {{state}}
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="col my-2">
+                                <button type="button" (click)="findProfiles()" class="btn btn-outline-primary"
+                                    [disabled]="isDisabledSearch()">
+                                    <i class="fas fa-search"></i> Buscar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="row table-responsive" *ngIf="profiles">
+                        <div>
+                            <table class="table table-hover" id="example">
+                                <caption>Listado de perfiles de usuario</caption>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Codigo</th>
+                                        <th scope="col">Nombre</th>
+                                        <th scope="col">Estado</th>
+                                        <th scope="col">Detalle</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let profile of profiles">
+                                        <td> {{profile.code}}</td>
+                                        <td> {{profile.name}}</td>
+                                        <td> {{profile.state}}</td>
+                                        <td> <a type="button" class="btn btn-outline-primary"
+                                                [routerLink]="['/users-app/profiles/edit', profile.identifier ]">Ver</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <app-pagination [allPagesNumber]="allPages" [itemsOptions]="pageSizes"
+                            (changePage)="handlePageChange($event)" (changeItems)="handlePageSizeChange($event)">
+                        </app-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,52 @@
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-12 text-center mx-auto">
+            <div class="row card shadow mt-5">
+                <div class="card-header">
+                    <h3 *ngIf="!editMode">Registro Perfil</h3>
+                    <h3 *ngIf="editMode">Detalle Perfil</h3>
+                </div>
+                <div class="card-body">
+                    <form [formGroup]="registerForm" (ngSubmit)="submitProfile()" autocomplete="off">
+                        <div class="row m-2 px-2">
+                            <!-- Identifier -->
+                            <div class="input-group col-md mb-4">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"> Código </span>
+                                </div>
+                                <input type="text" id="code" class="form-control" formControlName="code"
+                                    placeholder="Código Perfil" (keypress)="numberOnly($event)">
+                            </div>
+                            <!-- Name -->
+                            <div class="input-group col-md mb-4">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"> Nombre </span>
+                                </div>
+                                <input formControlName="name" id="name" type="text" placeholder="Nombre del perfil"
+                                    class="form-control" oninput="this.value = this.value.toUpperCase()">
+                            </div>
+                            <!-- State -->
+                            <div class="input-group col-md mb-4" *ngIf="editMode">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"> Estado </span>
+                                </div>
+                                <select id="state" name="state" class="form-control custom-select"
+                                    formControlName="state">
+                                    <option *ngFor="let state of states" value="{{state}}">
+                                        {{state}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <button class="next action-button btn btn-outline-primary m-2" type="submit"
+                            [disabled]='!registerForm.valid'>Guardar</button>
+                        <button class="btn btn-outline-dark m-2" (click)="backLocation()" type="button">
+                            <i class="fas fa-arrow-left"></i> Volver
+                        </button>
+                    </form>
+                    <users-authorization [profileId]=id *ngIf="editMode"></users-authorization>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

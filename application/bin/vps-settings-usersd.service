@@ -1,0 +1,10 @@
+[Unit]
+Description=Vial+ Platform Users Management Service.
+After=syslog.target
+
+[Service]
+ExecStart=/opt/vps/settings-users/bin/settings-users.jar
+SuccessExitStatus=TEMPFAIL 250 SIGKILL
+
+[Install]
+WantedBy=multi-user.target
